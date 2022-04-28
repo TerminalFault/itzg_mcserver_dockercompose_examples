@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+#######################################
+# Define Service Name here. If using  #
+# RCON this name will be referenced   #
+# again as RWA_RCON_HOST below        #
+#######################################
+  mc_mm:
+#######################################
+# Specify Image Name and Java Version #
+# &  Give the Container a Name        #
+#######################################
+    image: itzg/minecraft-server:java8-multiarch
+    container_name: mc_mmv47
+#######################################
+# Specify External Port               #
+#######################################
+    ports:
+      - 25565:25565
+#######################################
+# Restart server automatically        #
+#######################################
+    restart: unless-stopped
+#######################################
+# Place mod zip file in ./modpacks &  #
+# Specify the name of the data volume #
+# This MUST match "volume:" listed at #
+# the bottom of this config! If left  #
+# as the default the volume name will #
+# be the name of the folder created   #
+# for this config file.               #
+#######################################
+    volumes:
+      - ./modpacks:/modpacks:ro
+      - data:/data
+    environment:
+#######################################
+# Accept EULA by setting to "true"    #
+#######################################
+      EULA: "true"
+#######################################
+# Sets install to FORGE Defines MC    #
+# version and Forge version           #
+#######################################
+      TYPE: "FORGE"
+      VERSION: "1.16.5"
+      FORGEVERSION: "36.2.20"
+#######################################
+# Change to the name of the zip       #
+# folder containing the mod.          #
+#######################################
+      GENERIC_PACK: "/modpacks/mc_mm_v47.zip"
+#######################################
+# Sets install to CURSEFORGE &        #
+# specifies modpack location          #
+#######################################
+#      TYPE: "CURSEFORGE"
+#      CF_SERVER_MOD: /modpacks/mc_mm_v47.zip
+#######################################
+# Sets install to CURSEFORGE &        #
+# specifies modpack location          #
+#######################################
+#      TYPE: "CURSEFORGE"
+#      CF_SERVER_MOD: /modpacks/mc_mm_v47.zip
+#######################################
+# Set Maximum amount of memory here   #
+# for server here.                    #
+#######################################
+      MEMORY: "6G"
+#######################################
+# Set to "true" to delete old logs    #
+#######################################
+      ENABLE_ROLLING_LOGS: "true"
+#######################################
+# Specify server Timezone             #
+#######################################
+      TZ: "America/New_York"
+#######################################
+# Enable RCON for Browser Management  #
+#######################################
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "minecraft"
+      RCON_PORT: 25575
+#######################################
+# Game Options can be listed here     #
+# if setting options here OVERRIDE    #
+# must be set to "true"               #
+#######################################
+      OVERRIDE_SERVER_PROPERTIES: "true"
+      DIFFICULTY: "easy"
+      MAX_TICK_TIME: "-1"
+      VIEW_DISTANCE: "6"
+      ALLOW_FLIGHT: "true"
+      OPS: ""
+      VIEW_DISTANCE: 10
+      MAX_PLAYERS: 10
+      PVP: "false"
+      MOTD: "Welcome Home"
+#######################################
+# Creates the RCON Server Management  #
+# which enables remote management via #
+# a web browser.                      #
+#######################################
+  rcweb:
+    image: itzg/rcon
+    container_name: rcweb
+    environment:
+#######################################
+# Define Username & Password          #
+#######################################
+      RWA_USERNAME: 
+      RWA_PASSWORD: 
+      RWA_ADMIN: "TRUE"
+#######################################
+# HOST must match the service name    #
+# of the MC server created above      #
+#######################################
+      RWA_RCON_HOST: mc_mm
+      RWA_RCON_PASSWORD: minecraft
+#######################################
+# Port 4326 is the port used to access#
+# the admin portal. Change the first  #
+# half of specified port if you want  #
+# to access this via a different port #
+# EX: Change 4326:4326 to 8080:4326   #
+#######################################
+    ports:
+      - 4326:4326
+      - 4327:4327
+#######################################
+# Define data volume name here. This  #
+# can be changed but both the above   #
+# and below names must match.         #
+#######################################
+volumes:
+  data:
